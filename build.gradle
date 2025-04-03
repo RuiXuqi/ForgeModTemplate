@@ -9,7 +9,6 @@ plugins {
     id 'com.gradleup.shadow' version '9.0.0-beta12' // Remove this line and shadowJar task if you don't need shadow
     id 'org.jetbrains.changelog' version '2.2.1'
     id 'xyz.wagyourtail.unimined' version '1.3.14'
-    id 'net.kyori.blossom' version '2.1.0'
 }
 
 apply from: 'gradle/scripts/helpers.gradle'
@@ -19,6 +18,8 @@ assertProperty 'mod_version'
 assertProperty 'root_package'
 assertProperty 'mod_id'
 assertProperty 'mod_name'
+
+injectTags()
 
 assertSubProperties 'use_access_transformer', 'access_transformer_locations'
 assertSubProperties 'is_coremod', 'coremod_includes_mod', 'coremod_plugin_class_name'
@@ -97,18 +98,6 @@ dependencies {
 }
 
 apply from: 'gradle/scripts/dependencies.gradle'
-
-sourceSets {
-    main {
-        blossom {
-            javaSources {
-                property("mod_id", propertyString('mod_id'))
-                property("mod_name", propertyString('mod_name'))
-                property("mod_version", propertyString('mod_version'))
-            }
-        }
-    }
-}
 
 processResources {
 
@@ -234,6 +223,18 @@ String parserChangelog() {
         throw new GradleException('publish_with_changelog is true, but the changelog for the latest version is empty!')
     }
     return parsedChangelog
+}
+
+def injectTags() {
+    var target = new File("${rootProject.projectDir}/src/main/java/${root_package.replace('.', '/')}/${mod_id}/Reference.java")
+    var template = new File("${rootProject.projectDir}/template/Reference.java")
+    var replaceMap = [$mod_id : mod_id, $mod_name : mod_name, $mod_version : mod_version]
+    target.withWriter { var writer ->
+        template.eachLine { var line ->
+            replaceMap.each {if (line.contains(it.key)) line = line.replace(it.key, it.value)}
+            writer.write(line + "\n");
+        }
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
