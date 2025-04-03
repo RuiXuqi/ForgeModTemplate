@@ -29,7 +29,6 @@ assertSubProperties 'use_asset_mover', 'asset_mover_version'
 
 setDefaultProperty 'generate_sources_jar', true, false
 setDefaultProperty 'generate_javadocs_jar', true, false
-setDefaultProperty 'use_dependency_at_files', true, true
 setDefaultProperty 'minecraft_username', true, 'Developer'
 setDefaultProperty 'extra_jvm_args', false, ''
 
@@ -121,12 +120,8 @@ processResources {
     inputs.property 'mod_url', propertyString('mod_url')
     inputs.property 'mod_update_json', propertyString('mod_update_json')
     inputs.property 'mod_logo_path', propertyString('mod_logo_path')
-    inputs.property 'mixin_refmap', propertyString('mixin_refmap')
-    inputs.property 'mixin_package', propertyString('mixin_package')
-    inputs.property 'mixin_configs', propertyStringList('mixin_configs').join(' ')
 
     def filterList = ['mcmod.info', 'pack.mcmeta']
-    filterList.addAll(propertyStringList('mixin_configs').collect(config -> "mixins.${config}.json" as String))
 
     filesMatching(filterList) { fcd ->
         fcd.expand(
@@ -139,13 +134,7 @@ processResources {
                 'mod_url': propertyString('mod_url'),
                 'mod_update_json': propertyString('mod_update_json'),
                 'mod_logo_path': propertyString('mod_logo_path'),
-                'mixin_refmap': propertyString('mixin_refmap'),
-                'mixin_package': propertyString('mixin_package')
         )
-    }
-    
-    if (propertyBool('use_access_transformer')) {
-        rename '(.+_at.cfg)', 'META-INF/$1'
     }
 
 }
