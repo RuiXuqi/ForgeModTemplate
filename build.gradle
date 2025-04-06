@@ -163,6 +163,15 @@ jar {
     finalizedBy(shadowJar)
 }
 
+tasks.remapJar {
+    doFirst {
+        logging.captureStandardOutput LogLevel.INFO
+    }
+    doLast {
+        logging.captureStandardOutput LogLevel.QUIET
+    }
+}
+
 shadowJar {
     configurations = [project.configurations.shadow]
     archiveClassifier = "shadow"
