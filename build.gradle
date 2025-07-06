@@ -71,6 +71,7 @@ unimined.minecraft {
         loader "0.3.7-alpha"
         runs.auth.username = minecraft_username
         runs.all {
+            systemProperty("cleanroom.dev.mixin", "${mod_id}.default.mixin.json,${mod_id}.mod.mixin.json")
             if (hasProperty("extra_jvm_args")) {
                 jvmArgs(propertyString('extra_jvm_args'))
             }
