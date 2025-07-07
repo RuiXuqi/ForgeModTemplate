@@ -71,18 +71,15 @@ unimined.minecraft {
         loader "0.3.8-alpha"
         runs.auth.username = minecraft_username
         runs.all {
-            systemProperty("cleanroom.dev.mixin", "${mod_id}.default.mixin.json,${mod_id}.mod.mixin.json")
+            var map = ["cleanroom.dev.mixin": "${mod_id}.default.mixin.json,${mod_id}.mod.mixin.json"]
             if (hasProperty("extra_jvm_args")) {
                 jvmArgs(propertyString('extra_jvm_args'))
             }
             if (propertyBool('enable_foundation_debug')) {
-                setSystemProperties(
-                        [
-                                "foundation.dump": "true",
-                                "foundation.verbose": "true"
-                        ]
-                )
+                map.put('foundation.dump', 'true')
+                map.put('foundation.verbose', 'true')
             }
+            setSystemProperties(map)
             return
         }
     }
