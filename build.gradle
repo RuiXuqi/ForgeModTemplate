@@ -68,16 +68,17 @@ unimined.minecraft {
         if (propertyBool('use_access_transformer')) {
             accessTransformer "${rootProject.projectDir}/src/main/resources/" +  propertyString('access_transformer_locations')
         }
-        loader "0.3.8-alpha"
+        loader "0.3.10-alpha"
         runs.auth.username = minecraft_username
         runs.all {
-            var map = ["cleanroom.dev.mixin": "${mod_id}.default.mixin.json,${mod_id}.mod.mixin.json"]
+            var map = getSystemProperties()
+            map.put("cleanroom.dev.mixin", "${mod_id}.default.mixin.json,${mod_id}.mod.mixin.json")
             if (hasProperty("extra_jvm_args")) {
                 jvmArgs(propertyString('extra_jvm_args'))
             }
             if (propertyBool('enable_foundation_debug')) {
-                map.put('foundation.dump', 'true')
-                map.put('foundation.verbose', 'true')
+                map.put("foundation.dump", "true")
+                map.put("foundation.verbose", "true")
             }
             setSystemProperties(map)
             return
