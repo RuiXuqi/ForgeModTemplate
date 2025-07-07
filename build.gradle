@@ -80,7 +80,6 @@ unimined.minecraft {
                 map.put("foundation.dump", "true")
                 map.put("foundation.verbose", "true")
             }
-            setSystemProperties(map)
             return
         }
     }
