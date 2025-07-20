@@ -39,6 +39,8 @@ dependencies {
     // annotationProcessor = annotation processing dependencies
     // contain = bundle dependency jars into final artifact, will extract them in mod loading. Please only do this to non-mod dependencies.
     // shadow = bundle dependencies into shadow output artifact (relocation configurable in shadowJar task)
+    // modImplementation = mod dependency available at both compile time and runtime
+    // modCompileOnly = mod dependency available only at compile time
 
     // Transitive dependencies:
     // (Dependencies that your dependency depends on)
