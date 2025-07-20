@@ -55,6 +55,8 @@ configurations {
     contain
     implementation.extendsFrom(embed)
     implementation.extendsFrom(contain)
+    modCompileOnly
+    compileOnly.extendsFrom modCompileOnly
 }
 
 unimined.minecraft {
@@ -73,8 +75,9 @@ unimined.minecraft {
         runs.all {
             var map = getSystemProperties()
             map.put("cleanroom.dev.mixin", "${mod_id}.default.mixin.json,${mod_id}.mod.mixin.json")
-            if (hasProperty("extra_jvm_args")) {
-                jvmArgs(propertyString('extra_jvm_args'))
+            def extraArgs = propertyString('extra_jvm_args')
+            if (extraArgs != null && !extraArgs.trim().isEmpty()) {
+                jvmArgs += extraArgs.split("\\s+").toList()
             }
             if (propertyBool('enable_foundation_debug')) {
                 map.put("foundation.dump", "true")
@@ -84,13 +87,18 @@ unimined.minecraft {
         }
     }
 
+    defaultRemapJar = false
 
-}
+    remap(tasks.shadowJar) {
+        mixinRemap {
+            enableBaseMixin()
+            enableMixinExtra()
+            disableRefmap()
+        }
+    }
 
-repositories {
-    maven {
-        name 'CleanroomMC Maven'
-        url 'https://maven.cleanroommc.com'
+    mods{
+        remap(configurations.modCompileOnly)
     }
 }
 
@@ -166,18 +174,10 @@ jar {
         }
     }
     if (propertyBool('enable_shadow')) {
-        finalizedBy(shadowJar)
+        finalizedBy(tasks.named("remapShadowJar"))
     }
 }
 
-tasks.remapJar {
-    doFirst {
-        logging.captureStandardOutput LogLevel.INFO
-    }
-    doLast {
-        logging.captureStandardOutput LogLevel.QUIET
-    }
-}
 
 shadowJar {
     configurations = [project.configurations.shadow]
