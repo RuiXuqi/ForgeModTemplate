@@ -83,6 +83,15 @@ unimined.minecraft {
         }
     }
 
+    defaultRemapJar = false
+
+    remap(tasks.shadowJar) {
+        mixinRemap {
+            enableBaseMixin()
+            enableMixinExtra()
+            disableRefmap()
+        }
+    }
 
 }
 
@@ -164,18 +173,10 @@ jar {
         }
     }
     if (propertyBool('enable_shadow')) {
-        finalizedBy(shadowJar)
+        finalizedBy(tasks.named("remapShadowJar"))
     }
 }
 
-tasks.remapJar {
-    doFirst {
-        logging.captureStandardOutput LogLevel.INFO
-    }
-    doLast {
-        logging.captureStandardOutput LogLevel.QUIET
-    }
-}
 
 shadowJar {
     configurations = [project.configurations.shadow]
