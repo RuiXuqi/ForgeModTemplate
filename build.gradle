@@ -55,6 +55,8 @@ configurations {
     contain
     implementation.extendsFrom(embed)
     implementation.extendsFrom(contain)
+    modCompileOnly
+    compileOnly.extendsFrom modCompileOnly
 }
 
 unimined.minecraft {
@@ -93,6 +95,9 @@ unimined.minecraft {
         }
     }
 
+    mods{
+        remap(configurations.modCompileOnly)
+    }
 }
 
 dependencies {
