@@ -1,4 +1,4 @@
-package com.example.modid.mixin.mod;
+package com.example.modid;
 
 import net.minecraftforge.fml.common.Loader;
 import org.objectweb.asm.tree.ClassNode;
