@@ -4,7 +4,7 @@ plugins {
     id 'java'
     id 'java-library'
     id 'maven-publish'
-    id 'com.gradleup.shadow' version '9.0.0-rc1' // Remove this line and shadowJar task if you don't need shadow
+    id 'com.gradleup.shadow' version '9.0.0-rc3' // Remove this line and shadowJar task if you don't need shadow
     id 'org.jetbrains.changelog' version '2.2.1'
     id 'xyz.wagyourtail.unimined' version '1.4.1'
 }
@@ -70,7 +70,7 @@ unimined.minecraft {
         if (propertyBool('use_access_transformer')) {
             accessTransformer "${rootProject.projectDir}/src/main/resources/" +  propertyString('access_transformer_locations')
         }
-        loader "0.3.10-alpha"
+        loader "0.3.13-alpha"
         runs.auth.username = minecraft_username
         runs.all {
             var map = getSystemProperties()
