@@ -70,7 +70,7 @@ This template comes with three workflows.
 
 `release.yml` will make a GitHub release if you pushed a git tag.
 
-`release-to-cf-mr` can publish your mod to CurseForge and/or Modrinth.
+`release-to-cf-mr.yml` can publish your mod to CurseForge and/or Modrinth.
 
 You need to fill in your project IDs and configure your tokens in GitHub repository first.
 
