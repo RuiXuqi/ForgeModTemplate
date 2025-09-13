@@ -1,19 +1,7 @@
-# CleanroomModTemplate
-Mod development template for Cleanroom, uses Unimined
+# ForgeModTemplate
+A customized mod development template for Forge 2860, uses Unimined.
 
-## Usage
-### Choose Branch
-Choose mixin branch if you want to use Mixin.
-
-Use scala and kotlin branch if you want to write in non-Java language. 
-
-There are 4 branches available:
-- main
-- mixin
-- scala
-- kotlin
-
-If you want to use non-main branches, after clicked *Create a new repository* under *Use this template*, check the *Include all branches* checkbox.
+Scripts are taken from [CleanroomModTemplate](https://github.com/CleanroomMC/CleanroomModTemplate) && [kappa-maintainer/Cleanroom-Relauncher](https://github.com/kappa-maintainer/Cleanroom-Relauncher).
 
 ### gradle.properties
 Edit gradle.properties and set your modid, mod version, mod name, package, etc.
@@ -39,19 +27,6 @@ You can use `shadow` in dependency declaration to shadow libraries.
 You can use `contain` in dependency declaration to add non-mod libraries to artifact jar.
 
 They will be extracted and loaded automatically in production.
-
-### Mixin
-MixinBooter API is deprecated in Cleanroom.
-
-Current approach is to set json configs in `MixinConfigs` manifest key, which will be read by Cleanroom.
-
-You don't need to set tons of json too. If you aren't mixining into Forge, all you need is two jsons for `DEFAULT` hase and `MOD` Phase.
-
-All you need is to put `IEarlyMixinLoader` mixin to `DEFAULT` json, and, mixins from `ILateMixinLoader` to `MOD` json.
-
-As for calling `Loader.isModLoaded()`, just fit an `IMixinConfigPlugin` to your json and call in `shouldApply()`
-
-There are some example mixins and a HEI dependency in mixin fork, remove them before writing yours.
 
 ### Access Transformer
 You MUST write AT file in MCP name. It will be remapped back to SRG name in artifact jar.
