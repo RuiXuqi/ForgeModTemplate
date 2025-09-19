@@ -27,6 +27,9 @@ jobs:
         
       - name: Add permission
         run: chmod +x ./gradlew
+
+      - name: Execute Gradle spotlessApply
+        run: ./gradlew spotlessApply
         
       - name: Execute Gradle build
         run: ./gradlew build
