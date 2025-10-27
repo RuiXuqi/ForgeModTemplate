@@ -4,6 +4,10 @@ repositories {
     // Other repositories described by default:
     // CleanroomMC: https://maven.cleanroommc.com
     maven {
+        name 'Forge'
+        url '"https://maven.minecraftforge.net'
+    }
+    maven {
         name 'CurseMaven'
         url 'https://curse.cleanroommc.com'
     }
