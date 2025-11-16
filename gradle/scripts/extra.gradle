@@ -6,7 +6,7 @@
 spotless {
     java {
         // Don't forget to change the path.
-        target 'src/*/java/${root_package}/${mod_id}/**/*.java'
+        target 'src/*/java/com/example/modid/**/*.java'
 
         leadingTabsToSpaces()
         endWithNewline()
