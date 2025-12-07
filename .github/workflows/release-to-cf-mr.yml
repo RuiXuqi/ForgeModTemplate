@@ -14,10 +14,10 @@ jobs:
         with:
           fetch-depth: 0
           
-      - name: Set up JDK 21
+      - name: Set up JDK 25
         uses: actions/setup-java@v5
         with:
-          java-version: '21'
+          java-version: '25'
           distribution: 'temurin'
           
       - uses: gradle/actions/setup-gradle@v5
@@ -27,12 +27,9 @@ jobs:
         
       - name: Add permission
         run: chmod +x ./gradlew
-
-      - name: Execute Gradle spotlessApply
-        run: ./gradlew spotlessApply
         
       - name: Execute Gradle build
-        run: ./gradlew build
+        run: ./gradlew build -x spotlessCheck
 
       - name: Get Changes between Tags
         id: changes
