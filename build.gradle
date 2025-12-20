@@ -71,7 +71,7 @@ unimined.minecraft {
         mcp("stable", "39-1.12")
     }
 
-    forge {
+    minecraftForge {
         if (propertyBool('use_access_transformer')) {
             accessTransformer "${rootProject.projectDir}/src/main/resources/" +  propertyString('access_transformer_locations')
         }
