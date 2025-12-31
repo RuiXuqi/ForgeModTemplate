@@ -1,10 +1,14 @@
+import org.jetbrains.gradle.ext.Gradle
+
 plugins {
     id 'java'
     id 'java-library'
     id 'maven-publish'
+    id 'org.jetbrains.gradle.plugin.idea-ext' version '1.3'
     id 'com.gradleup.shadow' version '9.2.2'
     id 'xyz.wagyourtail.unimined' version '1.4.9-kappa'
     id 'net.kyori.blossom'  version '2.1.0'
+    id 'com.diffplug.spotless' version '8.1.0'
 }
 
 apply from: 'gradle/scripts/helpers.gradle'
@@ -15,6 +19,7 @@ assertProperty 'root_package'
 assertProperty 'mod_id'
 assertProperty 'mod_name'
 
+assertSubProperties 'use_lombok_ap', 'lombok_version'
 assertSubProperties 'use_access_transformer', 'access_transformer_locations'
 assertSubProperties 'is_coremod', 'coremod_includes_mod', 'coremod_plugin_class_name'
 assertSubProperties 'use_asset_mover', 'asset_mover_version'
@@ -30,7 +35,6 @@ group = propertyString('root_package')
 base {
     archivesName.set(propertyString('mod_id'))
 }
-
 
 java {
     toolchain {
@@ -66,7 +70,7 @@ unimined.minecraft {
         if (propertyBool('use_access_transformer')) {
             accessTransformer "${rootProject.projectDir}/src/main/resources/${propertyString('access_transformer_locations')}"
         }
-        loader "0.3.31-alpha"
+        loader "0.3.27-alpha"
         runs.auth.username = minecraft_username
         runs.all {
             systemProperty("crl.dev.mixin", "${mod_id}.default.mixin.json,${mod_id}.mod.mixin.json")
@@ -112,6 +116,13 @@ unimined.minecraft {
 }
 
 dependencies {
+    if (propertyBool('use_lombok_ap')) {
+        compileOnly "org.projectlombok:lombok:${propertyString('lombok_version')}"
+        annotationProcessor "org.projectlombok:lombok:${propertyString('lombok_version')}"
+
+        testCompileOnly "org.projectlombok:lombok:${propertyString('lombok_version')}"
+        testAnnotationProcessor "org.projectlombok:lombok:${propertyString('lombok_version')}"
+    }
     if (propertyBool('use_asset_mover')) {
         implementation "com.cleanroommc:assetmover:${propertyString('asset_mover_version')}"
     }
@@ -119,6 +130,7 @@ dependencies {
         testImplementation 'org.junit.jupiter:junit-jupiter:5.7.1'
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     }
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
 apply from: 'gradle/scripts/dependencies.gradle'
@@ -131,9 +143,14 @@ processResources {
     inputs.property 'mod_description', propertyString('mod_description')
     inputs.property 'mod_authors', "${propertyStringList('mod_authors', ',').join(', ')}"
     inputs.property 'mod_credits', propertyString('mod_credits')
+    inputs.property 'mod_license', propertyString('mod_license')
     inputs.property 'mod_url', propertyString('mod_url')
+    inputs.property 'mod_issue_tracker_url', propertyString('mod_issue_tracker_url')
     inputs.property 'mod_update_json', propertyString('mod_update_json')
+    inputs.property 'mod_icon_item', propertyString('mod_icon_item')
     inputs.property 'mod_logo_path', propertyString('mod_logo_path')
+    inputs.property 'mod_icon_path', propertyString('mod_icon_path')
+    inputs.property 'mod_background_path', propertyString('mod_background_path')
 
     def filterList = ['mcmod.info', 'pack.mcmeta']
 
@@ -145,9 +162,14 @@ processResources {
                 'mod_description': propertyString('mod_description'),
                 'mod_authors': "${propertyStringList('mod_authors', ',').join(', ')}",
                 'mod_credits': propertyString('mod_credits'),
+                'mod_license': propertyString('mod_license'),
                 'mod_url': propertyString('mod_url'),
+                'mod_issue_tracker_url': propertyString('mod_issue_tracker_url'),
                 'mod_update_json': propertyString('mod_update_json'),
+                'mod_icon_item': propertyString('mod_icon_item'),
                 'mod_logo_path': propertyString('mod_logo_path'),
+                'mod_icon_path': propertyString('mod_icon_path'),
+                'mod_background_path': propertyString('mod_background_path'),
         )
     }
 
@@ -218,6 +240,44 @@ remapJar {
     }
     doLast {
         logging.captureStandardOutput LogLevel.QUIET
+    }
+}
+
+idea {
+    module {
+        inheritOutputDirs = true
+    }
+    project {
+        settings {
+            runConfigurations {
+                "0. Apply Spotless"(Gradle) {
+                    taskNames = ["spotlessApply"]
+                }
+                "1. Run Client"(Gradle) {
+                    taskNames = ["runClient"]
+                }
+                "2. Run Server"(Gradle) {
+                    taskNames = ["runServer"]
+                }
+                "3. Run Obfuscated Client"(Gradle) {
+                    taskNames = ["runObfClient"]
+                }
+                "4. Run Obfuscated Server"(Gradle) {
+                    taskNames = ["runObfServer"]
+                }
+                "5. Build Mod"(Gradle) {
+                    taskNames = ["build"]
+                }
+            }
+            compiler.javac {
+                afterEvaluate {
+                    javacAdditionalOptions = "-encoding utf8"
+                    moduleJavacAdditionalOptions = [
+                            (project.name + ".main"): tasks.compileJava.options.compilerArgs.collect { '"' + it + '"' }.join(' ')
+                    ]
+                }
+            }
+        }
     }
 }
 
