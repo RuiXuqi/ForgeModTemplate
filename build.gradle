@@ -73,14 +73,14 @@ unimined.minecraft {
 
     minecraftForge {
         if (propertyBool('use_access_transformer')) {
-            accessTransformer "${rootProject.projectDir}/src/main/resources/" +  propertyString('access_transformer_locations')
+            accessTransformer "${rootProject.projectDir}/src/main/resources/${propertyString('access_transformer_locations')}"
         }
         loader "14.23.5.2860"
         runs.auth.username = minecraft_username
         runs.all {
             def extraArgs = propertyString('extra_jvm_args')
             if (extraArgs != null && !extraArgs.trim().isEmpty()) {
-                jvmArgs += extraArgs.split("\\s+").toList()
+                jvmArgs += extraArgs.split { "\\s+" }.toList()
             }
             return
         }
