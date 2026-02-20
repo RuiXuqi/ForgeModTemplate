@@ -93,7 +93,6 @@ unimined.minecraft {
             mixinRemap {
                 enableBaseMixin()
                 enableMixinExtra()
-                disableRefmap()
             }
         }
     } else {
@@ -101,7 +100,6 @@ unimined.minecraft {
             mixinRemap {
                 enableBaseMixin()
                 enableMixinExtra()
-                disableRefmap()
             }
         }
     }
@@ -140,14 +138,10 @@ dependencies {
         implementation "com.cleanroommc:configanytime:${propertyString('config_any_time_version')}"
     }
     if (propertyBool('use_mixins')) {
-        String mixin = "zone.rong:mixinbooter:${propertyString('mixin_booter_version')}"
-        api (mixin) {
-            transitive = false
-        }
         annotationProcessor 'org.ow2.asm:asm-debug-all:5.2'
         annotationProcessor 'com.google.guava:guava:32.1.2-jre'
         annotationProcessor 'com.google.code.gson:gson:2.8.9'
-        annotationProcessor (mixin) {
+        implementation ("zone.rong:mixinbooter:${propertyString('mixin_booter_version')}") {
             transitive = false
         }
     }
