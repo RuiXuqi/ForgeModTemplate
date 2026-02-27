@@ -33,12 +33,12 @@ version = propertyString('mod_version')
 group = propertyString('root_package')
 
 base {
-    archivesName.set(propertyString('mod_id'))
+    archivesName = propertyString('mod_id')
 }
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion = JavaLanguageVersion.of(21)
     }
     if (propertyBool('generate_sources_jar')) {
         withSourcesJar()
@@ -70,7 +70,7 @@ unimined.minecraft {
         if (propertyBool('use_access_transformer')) {
             accessTransformer "${rootProject.projectDir}/src/main/resources/${propertyString('access_transformer_locations')}"
         }
-        loader "0.4.3-alpha"
+        loader "0.4.4-alpha"
         runs.auth.username = minecraft_username
         runs.all {
             def extraArgs = propertyString('extra_jvm_args')
