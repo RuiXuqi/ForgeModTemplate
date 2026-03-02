@@ -4,13 +4,12 @@ plugins {
     id 'java'
     id 'java-library'
     id 'maven-publish'
-    id 'com.gradleup.shadow' version '9.3.2'
     id 'org.jetbrains.gradle.plugin.idea-ext' version '1.4.1'
+    id 'com.gradleup.shadow' version '9.3.2'
     id 'xyz.wagyourtail.unimined' version '1.4.10-kappa'
     id 'net.kyori.blossom' version '2.2.0'
+    id 'com.diffplug.spotless' version '8.2.1'
 }
-
-import org.jetbrains.gradle.ext.Gradle
 
 apply from: 'gradle/scripts/helpers.gradle'
 
@@ -91,9 +90,9 @@ unimined.minecraft {
     }
 
     defaultRemapJar = false
-    
+
     String jarTaskName = propertyBool('enable_shadow') ? "shadowJar" : "jar"
-    
+
     remap(tasks.named(jarTaskName).get()) {
         mixinRemap {
             enableBaseMixin()
