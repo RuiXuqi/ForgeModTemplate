@@ -32,12 +32,6 @@ Edit gradle.properties and set your modid, mod version, mod name, package, etc.
 
 If you are writing a coremod, remember to set related settings to true.
 
-### Mixin
-1. Rename json config file to include your modid. You will need one json per phase (`PRE_INIT`, `DEFAULT`, `MOD`) 
-2. Add your mixin classes there.
-3. Use `IMixinConfigPlugin` to control if certain mixin should be enabled. You can call `Loader.isModLoaded()` for `MOD` phase mixins.
-4. Don't worry about refmap, Unimined will handle it automatically. You can still `disableRefmap()` manually though
-
 ### Reference Class
 There will be a `Reference` class under your top package.
 
