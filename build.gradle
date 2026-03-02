@@ -2,10 +2,13 @@ plugins {
     id 'java'
     id 'java-library'
     id 'maven-publish'
-    id 'com.gradleup.shadow' version '9.2.2'
+    id 'com.gradleup.shadow' version '9.3.2'
+    id 'org.jetbrains.gradle.plugin.idea-ext' version '1.4.1'
     id 'xyz.wagyourtail.unimined' version '1.4.10-kappa'
     id 'net.kyori.blossom'  version '2.1.0'
 }
+
+import org.jetbrains.gradle.ext.Gradle
 
 apply from: 'gradle/scripts/helpers.gradle'
 
@@ -55,6 +58,8 @@ configurations {
     runtimeOnly.extendsFrom(modRuntimeOnly)
 }
 
+String remapTaskName = propertyBool('enable_shadow') ? "remapShadowJar" : "remapJar"
+
 unimined.minecraft {
     version "1.12.2"
 
@@ -85,22 +90,14 @@ unimined.minecraft {
     }
 
     defaultRemapJar = false
-
-    if (propertyBool('enable_shadow')) {
-        remap(tasks.shadowJar) {
-            mixinRemap {
-                enableBaseMixin()
-                enableMixinExtra()
-                disableRefmap()
-            }
-        }
-    } else {
-        remap(tasks.jar) {
-            mixinRemap {
-                enableBaseMixin()
-                enableMixinExtra()
-                disableRefmap()
-            }
+    
+    String jarTaskName = propertyBool('enable_shadow') ? "shadowJar" : "jar"
+    
+    remap(tasks.named(jarTaskName).get()) {
+        mixinRemap {
+            enableBaseMixin()
+            enableMixinExtra()
+            disableRefmap()
         }
     }
 
@@ -166,8 +163,41 @@ sourceSets {
     }
 }
 
+idea {
+    module {
+        inheritOutputDirs = true
+    }
+    project {
+        settings {
+            runConfigurations {
+                "1. Build"(Gradle) {
+                    taskNames = ["build"]
+                }
+                "2. Run Client"(Gradle) {
+                    taskNames = ["runClient"]
+                }
+                "3. Run Server"(Gradle) {
+                    taskNames = ["runServer"]
+                }
+            }
+            compiler.javac {
+                afterEvaluate {
+                    javacAdditionalOptions = "-encoding utf8"
+                    moduleJavacAdditionalOptions = [
+                            (project.name + ".main"): tasks.compileJava.options.compilerArgs.collect { '"' + it + '"' }.join(' ')
+                    ]
+                }
+            }
+        }
+    }
+}
+
 if (!propertyBool('enable_shadow')) {
     shadowJar.enabled = false
+}
+
+compileJava {
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {
@@ -197,11 +227,7 @@ jar {
             attributes(attribute_map)
         }
     }
-    if (propertyBool('enable_shadow')) {
-        finalizedBy(tasks.named("remapShadowJar"))
-    } else {
-        finalizedBy(tasks.named("remapJar"))
-    }
+    finalizedBy(tasks.named(remapTaskName).get())
 }
 
 
@@ -210,7 +236,8 @@ shadowJar {
     archiveClassifier = "shadow"
 }
 
-remapJar {
+
+tasks.named(remapTaskName).configure {
     doFirst {
         logging.captureStandardOutput LogLevel.INFO
     }
