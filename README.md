@@ -1,5 +1,7 @@
-# CleanroomModTemplate
-Mod development template for Cleanroom, uses Unimined
+# ForgeModTemplate
+A customized mod development template for Forge 2860, uses Unimined.
+
+Scripts are taken from [CleanroomModTemplate](https://github.com/CleanroomMC/CleanroomModTemplate) && [kappa-maintainer/Cleanroom-Relauncher](https://github.com/kappa-maintainer/Cleanroom-Relauncher).
 
 ## DOs and DON'Ts
 ### Choose Branch
@@ -7,14 +9,12 @@ Choose mixin branch if you want to use Mixin.
 
 Use scala and kotlin branch if you want to use those languages. 
 
-There are 4 branches available:
+There are 3 branches available:
+- forge
 - main
 - mixin
-- scala
-- kotlin
 
 If you want to use non-main branches, after clicked *Create a new repository* under *Use this template*, check the *Include all branches* checkbox.
-
 
 ### Running Client or Server
 If you are using IntelliJ, **DO NOT** use the `Minecraft Client` configure with a blue icon. Just use the `2. Run Client` Gradle task.
@@ -31,6 +31,12 @@ Two new configuration types `contain` and `shadow` are available, check more det
 Edit gradle.properties and set your modid, mod version, mod name, package, etc.
 
 If you are writing a coremod, remember to set related settings to true.
+
+### Mixin
+1. Rename json config file to include your modid. You will need one json per phase (`PRE_INIT`, `DEFAULT`, `MOD`) 
+2. Add your mixin classes there.
+3. Use `IMixinConfigPlugin` to control if certain mixin should be enabled. You can call `Loader.isModLoaded()` for `MOD` phase mixins.
+4. Don't worry about refmap, Unimined will handle it automatically. You can still `disableRefmap()` manually though
 
 ### Reference Class
 There will be a `Reference` class under your top package.
