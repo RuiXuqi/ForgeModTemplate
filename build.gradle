@@ -144,11 +144,16 @@ sourceSets {
                 property('mod_name', propertyString('mod_name'))
                 property('mod_version', propertyString('mod_version'))
                 property('mod_description', propertyString('mod_description'))
-                property('mod_authors', "${propertyStringList('mod_authors', ',').join(', ')}")
+                property('mod_authors', "${propertyStringList('mod_authors', ',').join('", "')}")
                 property('mod_credits', propertyString('mod_credits'))
+                property('mod_license', propertyString('mod_license'))
                 property('mod_url', propertyString('mod_url'))
+                property('mod_issue_tracker_url', propertyString('mod_issue_tracker_url'))
                 property('mod_update_json', propertyString('mod_update_json'))
+                property('mod_icon_item', propertyString('mod_icon_item'))
                 property('mod_logo_path', propertyString('mod_logo_path'))
+                property('mod_icon_path', propertyString('mod_icon_path'))
+                property('mod_background_path', propertyString('mod_background_path'))
             }
         }
     }
