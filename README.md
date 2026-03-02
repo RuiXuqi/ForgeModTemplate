@@ -45,6 +45,7 @@ You can find its template under `src/main/java-templates`.
 1. Rename json config file to include your modid. You will need one json per phase (`PRE_INIT`, `DEFAULT`, `MOD`) 
 2. Add your mixin classes there.
 3. Use `IMixinConfigPlugin` to control if certain mixin should be enabled. You can call `Loader.isModLoaded()` for `MOD` phase mixins.
+4. Don't worry about refmap, Unimined will handle it automatically. You can still `disableRefmap()` manually though
 
 ### Access Transformer
 You **MUST** write AT file in MCP name. It will be remapped back to SRG name in artifact jar.
