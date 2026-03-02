@@ -185,7 +185,7 @@ if (!propertyBool('enable_shadow')) {
 }
 
 compileJava {
-    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 jar {
