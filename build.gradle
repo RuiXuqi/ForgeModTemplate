@@ -230,13 +230,7 @@ idea {
                 "2. Run Server"(Gradle) {
                     taskNames = ["runServer"]
                 }
-                "3. Run Obfuscated Client"(Gradle) {
-                    taskNames = ["runObfClient"]
-                }
-                "4. Run Obfuscated Server"(Gradle) {
-                    taskNames = ["runObfServer"]
-                }
-                "5. Build Mod"(Gradle) {
+                "3. Build Mod"(Gradle) {
                     taskNames = ["build"]
                 }
             }
