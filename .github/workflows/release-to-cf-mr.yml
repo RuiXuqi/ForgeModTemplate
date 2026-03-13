@@ -22,7 +22,7 @@ jobs:
           
       - uses: gradle/actions/setup-gradle@v5
         with:
-          gradle-version: 9.3.1
+          gradle-version: 9.4.0
         name: Set up Gradle
         
       - name: Add permission
@@ -53,7 +53,6 @@ jobs:
           loaders: forge
           game-versions: 1.12.2
           java: |
-            21
-            22
+            8
           version: ${{ steps.changes.outputs.tag }}
           changelog: ${{ steps.changes.outputs.changes }}
