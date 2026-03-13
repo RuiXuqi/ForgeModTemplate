@@ -1,7 +1,10 @@
 # ForgeModTemplate
-A customized mod development template for Forge 2860, uses Unimined.
+A customized mod development template for Forge 2860, uses a custom [Unimined fork](https://github.com/kappa-maintainer/Unimined) ([original](https://github.com/unimined/Unimined))
 
 Scripts are taken from [CleanroomModTemplate](https://github.com/CleanroomMC/CleanroomModTemplate) && [kappa-maintainer/Cleanroom-Relauncher](https://github.com/kappa-maintainer/Cleanroom-Relauncher).
+
+### WARNING: Custom Unimined Fork
+May have issues, report here or [here](https://github.com/kappa-maintainer/Unimined) when you encountered impossible field names or impossible Scala compiler errors. 
 
 ## DOs and DON'Ts
 ### Choose Branch
