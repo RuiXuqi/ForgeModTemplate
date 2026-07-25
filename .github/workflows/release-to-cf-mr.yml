@@ -4,38 +4,28 @@ on:
   workflow_dispatch: 
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-          
-      - name: Set up JDK
-        uses: actions/setup-java@v5
-        with:
-          java-version: '25'
-          distribution: 'temurin'
-          
-      - uses: gradle/actions/setup-gradle@v6
-        with:
-          gradle-version: 9.6.1
-        name: Set up Gradle
-        
-      - name: Add permission
-        run: chmod +x ./gradlew
-        
-      - name: Execute Gradle build
-        run: ./gradlew build
+      - name: Download latest release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq '.tagName')"
+          url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${tag}"
 
-      - name: Get Changes between Tags
-        id: changes
-        uses: simbo/changes-between-tags-action@v1
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo "url=${url}" >> "$GITHUB_OUTPUT"
 
-      - uses: Kir-Antipov/mc-publish@v3.3.0
+          gh release download "$tag" \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern '*.jar' \
+            --dir release-assets
+
+      - uses: Kir-Antipov/mc-publish@v3
         with:
           # Only include this section if you wish to publish
           # your assets on Modrinth.
@@ -48,10 +38,11 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           files: |
-            build/libs/*.jar
+            release-assets/*.jar
           loaders: neoforge
+          environment: client | server
           game-versions: 1.12.2
           java: |
             25
-          version: ${{ steps.changes.outputs.tag }}
-          changelog: ${{ steps.changes.outputs.changes }}
+          version: ${{ steps.release.outputs.tag }}
+          changelog: '[View changelog on GitHub](${{ steps.release.outputs.url }})'
