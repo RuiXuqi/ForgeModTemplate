@@ -10,6 +10,6 @@
 	"updateJSON": "{{ mod_update_json }}",
 	"logoFile": "{{ mod_logo_path }}",
 	"modProperties": {
-		"issueTracker": "{{ mod_issue_tracker }}"
+		"issueTrackerUrl": "{{ mod_issue_tracker }}"
 	}
 }]
