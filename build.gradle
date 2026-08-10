@@ -206,16 +206,6 @@ shadowJar {
     archiveClassifier = "shadow"
 }
 
-
-tasks.named(remapTaskName).configure {
-    doFirst {
-        logging.captureStandardOutput LogLevel.INFO
-    }
-    doLast {
-        logging.captureStandardOutput LogLevel.QUIET
-    }
-}
-
 compileTestJava {
     sourceCompatibility = targetCompatibility = JavaVersion.VERSION_25
 }
