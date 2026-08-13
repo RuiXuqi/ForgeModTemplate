@@ -1,3 +1,17 @@
+# Modified version of CleanroomModTemplate
+A modified version of [CleanroomMC/CleanroomModTemplate](https://github.com/CleanroomMC/CleanroomModTemplate) with some QoL improvements.
+
+Feature:
+- Instant Gradle and kappa Unimined update
+- Improved shadow configuration to make you work less
+- Spotless plugin, whose check is disabled by default
+
+Stability not guaranteed.
+
+## Tips
+- If mixin is needed, use [mixin branch](https://github.com/RuiXuqi/CleanroomModTemplate/tree/mixin), or refer to [this commit](https://github.com/RuiXuqi/CleanroomModTemplate/commit/e297e29c86d984a0c05ecb44166202c09dac1ee2) to setup.
+- [RuiXuqi/ForgeDevEnv](https://github.com/RuiXuqi/ForgeDevEnv) provides MC 1.12.2 Forge 2847 support. Configuration highly aligned with this this.
+
 # CleanroomModTemplate
 Mod development template for Cleanroom, uses a custom [Unimined fork](https://github.com/kappa-maintainer/Unimined) ([original](https://github.com/unimined/Unimined))
 

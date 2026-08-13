@@ -4,12 +4,16 @@
 	"version": "{{ mod_version }}",
 	"mcversion": "1.12.2",
 	"description": "{{ mod_description }}",
-	"authorList": [{{ mod_authors }}],
+	"authorList": ["{{ mod_authors }}"],
 	"credits": "{{ mod_credits }}",
 	"url": "{{ mod_url }}",
 	"updateJSON": "{{ mod_update_json }}",
 	"logoFile": "{{ mod_logo_path }}",
 	"modProperties": {
-		"issueTrackerUrl": "{{ mod_issue_tracker }}"
+		"license": "{{ mod_license }}",
+		"issueTrackerUrl": "{{ mod_issue_tracker_url }}",
+		"iconItem": "{{ mod_icon_item }}",
+		"iconFile": "{{ mod_icon_path }}",
+		"backgroundFile": "{{ mod_background_path }}"
 	}
 }]
