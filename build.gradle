@@ -81,7 +81,7 @@ unimined.minecraft {
         if (propertyBool('use_access_transformer')) {
             accessTransformer "${rootProject.projectDir}/src/main/resources/${propertyString('access_transformer_locations')}"
         }
-        loader "0.5.17-alpha"
+        loader "0.6.10-alpha"
         runs.all {
             args += ['--username', minecraft_username]
             def extraArgs = propertyString('extra_jvm_args')
@@ -154,6 +154,9 @@ sourceSets {
                 property('mod_icon_path', propertyString('mod_icon_path'))
                 property('mod_background_path', propertyString('mod_background_path'))
             }
+            taskTriggers {
+                beforeSync tasks.named("genSources")
+            }
         }
     }
 }
@@ -204,15 +207,6 @@ if (propertyBool('enable_shadow')) {
     tasks.named("jar").configure {
         finalizedBy shadowJar
         archiveClassifier = "plain"
-    }
-}
-
-tasks.named(remapTaskName).configure {
-    doFirst {
-        logging.captureStandardOutput LogLevel.INFO
-    }
-    doLast {
-        logging.captureStandardOutput LogLevel.QUIET
     }
 }
 
