@@ -32,10 +32,10 @@ repositories {
 }
 
 dependencies {
-    compileOnly "com.cleanroommc:sponge-mixin:0.20.13+mixin.0.8.7"
-    if (propertyBool('enable_lwjglx')) {
-        compileOnly "com.cleanroommc:lwjglx:1.0.0"
-    }
+    // LWJGLX provides LWJGL2 (org.lwjgl) methods only in compile time, while LWJGLXX transforms them to org.lwjglx in run time
+    // Never refer to classes or methods in org.lwjglx
+    // Remove this only when you know what you are doing
+    compileOnly "com.cleanroommc:lwjglx:1.0.0"
 
     modLibrary 'mezz:jei:4.33.0:dev'
 

@@ -1,5 +1,6 @@
 // It is advised to not edit this file directly, in order to update script easily.
 // Instead, edit gradle/scripts/extra.gradle to customize the build.
+import groovy.json.JsonOutput
 import org.jetbrains.gradle.ext.Gradle
 
 plugins {
@@ -23,10 +24,10 @@ if (propertyBool('enable_shadow')) {
 assertProperty 'mod_version'
 assertProperty 'root_package'
 assertProperty 'mod_id'
-assertProperty 'mod_package'
 assertProperty 'mod_name'
 
 assertSubProperties 'use_access_transformer', 'access_transformer_locations'
+assertSubProperties 'use_mixins', 'mixin_configs'
 assertSubProperties 'is_coremod', 'coremod_includes_mod', 'coremod_plugin_class_name'
 
 setDefaultProperty 'generate_sources_jar', true, false
@@ -67,6 +68,10 @@ configurations {
     }
 }
 
+boolean useMixins = propertyBool('use_mixins')
+def mixinConfigs = propertyStringList('mixin_configs', ',')
+String mixinConfigValue = mixinConfigs.join(',')
+
 String remapTaskName = propertyBool('enable_shadow') ? "remapShadowJar" : "remapJar"
 
 //noinspection GroovyAssignabilityCheck
@@ -84,6 +89,9 @@ unimined.minecraft {
         loader "0.6.10-alpha"
         runs.all {
             args += ['--username', minecraft_username]
+            if (useMixins) {
+                systemProperty('crl.dev.mixin', mixinConfigValue)
+            }
             def extraArgs = propertyString('extra_jvm_args')
             if (extraArgs != null && !extraArgs.trim().isEmpty()) {
                 jvmArgs += extraArgs.split { "\\s+" }.toList()
@@ -104,7 +112,14 @@ unimined.minecraft {
     if (sourceSet == sourceSets.main) {
         String jarTaskName = propertyBool('enable_shadow') ? "shadowJar" : "jar"
 
-        remap(tasks.named(jarTaskName).get())
+        remap(tasks.named(jarTaskName).get()) {
+            if (useMixins) {
+                mixinRemap {
+                    enableBaseMixin()
+                    enableMixinExtra()
+                }
+            }
+        }
     }
 
     mods {
@@ -116,11 +131,13 @@ unimined.minecraft {
 // Do not configure your deps here!
 // Check gradle/scripts/dependencies.gradle for that.
 dependencies {
+    if (useMixins) {
+        compileOnly 'com.cleanroommc:sponge-mixin:0.20.13+mixin.0.8.7'
+    }
     if (propertyBool('enable_junit_testing')) {
         testImplementation 'org.junit.jupiter:junit-jupiter:6.1.3'
         testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     }
-    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
 }
 
 apply from: 'gradle/scripts/dependencies.gradle'
@@ -136,7 +153,6 @@ sourceSets {
                 property('mod_id', propertyString('mod_id'))
                 property('mod_name', propertyString('mod_name'))
                 property('mod_version', propertyString('mod_version'))
-                property('package', propertyString('mod_package'))
             }
             resources {
                 property('mod_id', propertyString('mod_id'))
@@ -174,6 +190,9 @@ jar {
         manifest {
             def attribute_map = [:]
             attribute_map['ModType'] = "CRL"
+            if (useMixins) {
+                attribute_map['MixinConfigs'] = mixinConfigValue
+            }
             if (configurations.contain.size() > 0) {
                 attribute_map['ContainedDeps'] = configurations.contain.collect { it.name }.join(' ')
                 attribute_map['NonModDeps'] = true
@@ -254,6 +273,41 @@ test {
     if (propertyBool('show_testing_output')) {
         testLogging {
             showStandardStreams = true
+        }
+    }
+}
+
+tasks.register('generateMixinJson') {
+    group = 'build setup'
+    description = 'Generates missing Mixin configuration JSON files.'
+    onlyIf {
+        useMixins
+    }
+    doLast {
+        def missingConfigs = mixinConfigs.findAll { configName ->
+            !file("src/main/resources/${configName}").exists()
+        }
+        if (missingConfigs.isEmpty()) {
+            logger.lifecycle('No missing Mixin JSON files.')
+            return
+        }
+        missingConfigs.each { configName ->
+            def configFile = file("src/main/resources/${configName}")
+            configFile.parentFile.mkdirs()
+            def config = [
+                    'package': '',
+                    'refmap': propertyString('mixin_refmap'),
+                    'required': true,
+                    'target': '@env(DEFAULT)',
+                    'minVersion': '0.8.7',
+                    'compatibilityLevel': 'JAVA_25',
+                    'mixins': [],
+                    'server': [],
+                    'client': [],
+                    'setSourceFile': true
+            ]
+            configFile.setText(JsonOutput.prettyPrint(JsonOutput.toJson(config)) + '\n', 'UTF-8')
+            logger.lifecycle("Generated Mixin JSON: ${configFile}")
         }
     }
 }

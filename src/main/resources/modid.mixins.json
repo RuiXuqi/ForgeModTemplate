@@ -1,0 +1,17 @@
+{
+    "package": "com.example.modid.mixin",
+    "plugin": "com.example.modid.ModMixinConfigPlugin",
+    "refmap": "modid.refmap.json",
+    "required": true,
+    "target": "@env(DEFAULT)",
+    "minVersion": "0.8.7",
+    "compatibilityLevel": "JAVA_25",
+    "mixins": [
+        "mod.hei.JustEnoughItemsMixin"
+    ],
+    "server": [],
+    "client": [
+        "MinecraftMixin"
+    ],
+    "setSourceFile": true
+}

@@ -1,4 +1,4 @@
-package {{ package }};
+package com.example.modid;
 
 /**
  * Tags storage class, you can change at will
