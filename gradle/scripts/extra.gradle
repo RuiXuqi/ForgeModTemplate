@@ -7,9 +7,8 @@ spotless {
     enforceCheck false
 
     java {
-        def packagePath = "${propertyString('mod_package')}".replace('.', '/')
         target fileTree('src') {
-            include "*/java/${packagePath}/**/*.java"
+            include "*/java/**/*.java"
         }
 
         leadingTabsToSpaces()
