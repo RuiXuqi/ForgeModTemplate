@@ -186,7 +186,12 @@ compileJava {
 }
 
 jar {
-    archiveClassifier = propertyBool('enable_shadow') ? 'plain' : ''
+    if (propertyBool('enable_shadow')) {
+        archiveClassifier = 'plain'
+    } else {
+        archiveClassifier = 'dev'
+        destinationDirectory = layout.buildDirectory.dir('libs')
+    }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     if (configurations.contain.size() > 0) {
         into('/') {
@@ -218,13 +223,19 @@ jar {
 if (propertyBool('enable_shadow')) {
     // Shade deps to the dev jar, so the normal dev jar will contain deps
     shadowJar {
-        archiveClassifier = ''
+        archiveClassifier = 'dev'
+        destinationDirectory = layout.buildDirectory.dir('libs')
         //noinspection GroovyAssignabilityCheck,GroovyAccessibility
         configurations = [ project.configurations.shaded ]
     }
     tasks.named('jar').configure {
         finalizedBy shadowJar
     }
+}
+
+tasks.named(reobfTaskName).configure {
+    // Convention from jar/shadowJar
+    archiveClassifier = ''
 }
 
 idea {
