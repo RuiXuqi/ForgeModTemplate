@@ -93,6 +93,7 @@ mcpForge {
     runs {
         configureEach {
             programArguments.addAll('--username', propertyString('minecraft_username'))
+            systemProperty 'mixin.env.disableRefMap', 'true'
             def extraArgs = propertyString('extra_jvm_args')
             if (extraArgs != null && !extraArgs.trim().isEmpty()) {
                 extraArgs.trim().split(/\s+/).each { jvmArgument(it) }
